@@ -1,9 +1,13 @@
 const {Sequelize,DataTypes} = require('sequelize')
+const databaseConfig = require('../config/dbConfig')
+const makeBlogTable = require('./blogModel')
+const makeUserTable = require('./userModel')
 
-const sequelize = new Sequelize('haha','root','',{
-    host : '127.0.0.1', 
-    port : 3306, 
-    dialect : 'mysql', 
+
+const sequelize = new Sequelize(databaseConfig.db,databaseConfig.username,databaseConfig.password,{
+    host : databaseConfig.host, 
+    port : databaseConfig.port, 
+    dialect : databaseConfig.dialect, 
     operatorsAliases : false, 
     pool : {
         max : 5, 
@@ -25,9 +29,10 @@ const db = {}
 db.Sequelize = Sequelize 
 db.sequelize = sequelize
 
+db.blogs = makeBlogTable(sequelize,DataTypes)
+db.users = makeUserTable(sequelize,DataTypes)
 
 db.sequelize.sync({force : false}).then(()=>{
     console.log("Synced done!!")
 })
 module.exports = db 
-
